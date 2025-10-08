@@ -17,8 +17,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight text-balance">設定</h1>
-        <p className="text-muted-foreground text-lg">ECサイト連携と自動生成の設定</p>
+        <h1 className="text-4xl font-bold tracking-tight text-balance">自動コンテンツ生成</h1>
+        <p className="text-muted-foreground text-lg">AIが自動でコンテンツを生成</p>
       </div>
 
       {/* ECサイト連携セクション */}
@@ -190,65 +190,6 @@ export default function SettingsPage() {
           </div>
         </Card>
       )}
-
-      {/* Instagram連携 */}
-      <Card>
-        <div className="p-6 border-b">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-pink-100 dark:bg-pink-950 flex items-center justify-center">
-              <Instagram className="h-5 w-5 text-pink-600 dark:text-pink-400" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">Instagram連携</h2>
-              <p className="text-sm text-muted-foreground">Instagramアカウントと連携して直接投稿</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6">
-          <Button variant="outline" className="w-full gap-2 bg-transparent">
-            <Instagram className="h-4 w-4" />
-            Instagramアカウントを連携
-          </Button>
-          <p className="text-xs text-muted-foreground mt-3">
-            連携すると、生成したコンテンツを直接Instagramに投稿できます
-          </p>
-        </div>
-      </Card>
-
-      {/* その他の設定 */}
-      <Card>
-        <div className="p-6 border-b">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
-              <SettingsIcon className="h-5 w-5 text-foreground" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">その他の設定</h2>
-              <p className="text-sm text-muted-foreground">アカウントと通知の設定</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">メールアドレス</Label>
-            <Input id="email" type="email" defaultValue="user@example.com" />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <Label htmlFor="notifications" className="text-base font-medium">
-                通知を受け取る
-              </Label>
-              <p className="text-sm text-muted-foreground">コンテンツ生成完了時にメールで通知</p>
-            </div>
-            <Switch id="notifications" defaultChecked />
-          </div>
-
-          <Button className="w-full">設定を保存</Button>
-        </div>
-      </Card>
     </div>
   )
 }

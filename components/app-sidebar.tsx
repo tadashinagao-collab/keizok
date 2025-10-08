@@ -12,36 +12,36 @@ import {
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar"
-import { LayoutDashboard, Package, ImageIcon, Sparkles, Settings, LogOut, LinkIcon } from "lucide-react"
+import { House, Package, ImageIcon, Plus, Settings, LogOut, Cog } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const menuItems = [
   {
-    title: "ダッシュボード",
-    icon: LayoutDashboard,
-    href: "/dashboard",
+    title: "ホーム",
+    icon: House,
+    href: "/home",
   },
   {
-    title: "ECサイト連携",
-    icon: LinkIcon,
-    href: "/dashboard/settings",
+    title: "自動生成",
+    icon: Cog,
+    href: "/automatic-generate",
     badge: "自動生成",
   },
   {
     title: "単発生成",
-    icon: Sparkles,
-    href: "/dashboard/generate",
+    icon: Plus,
+    href: "/single-generate",
   },
   {
     title: "商品管理",
     icon: Package,
-    href: "/dashboard/products",
+    href: "/products",
   },
   {
     title: "コンテンツギャラリー",
     icon: ImageIcon,
-    href: "/dashboard/gallery",
+    href: "/gallery",
   },
 ]
 
@@ -52,12 +52,12 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="border-b px-6 py-4">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+          {/* <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
-          </div>
+          </div> */}
           <div>
             <h2 className="font-bold text-lg">Keizok</h2>
-            <p className="text-xs text-muted-foreground">SNS Marketing</p>
+            <p className="text-xs text-muted-foreground">SNSマーケティング自動化ツール</p>
           </div>
         </div>
       </SidebarHeader>

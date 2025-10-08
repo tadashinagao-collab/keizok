@@ -28,7 +28,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight text-balance">ダッシュボード</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-balance">ホーム</h1>
         <p className="text-muted-foreground text-lg">SNSマーケティングを自動化して、ビジネスを加速</p>
       </div>
 
@@ -66,7 +66,7 @@ export default function DashboardPage() {
                 特定の商品について今すぐ投稿を作成したい時に。商品画像をアップロードまたはURLを入力するだけで、AIが魅力的なコンテンツを生成します。
               </p>
             </div>
-            <Link href="/dashboard/generate" className="block">
+            <Link href="/single-post" className="block">
               <Button size="lg" variant="outline" className="w-full gap-2 group-hover:border-primary/50 bg-transparent">
                 今すぐ生成する
                 <ArrowRight className="h-4 w-4" />
