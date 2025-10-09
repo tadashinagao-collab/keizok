@@ -65,6 +65,14 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedContent, setGeneratedContent] = useState<string | null>(null)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [productUrl, setProductUrl] = useState<string>("")
+  const [isImporting, setIsImporting] = useState(false)
+  const [importedProductInfo, setImportedProductInfo] = useState<{
+    name: string
+    price: string
+    category: string
+    description: string
+  } | null>(null)
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -94,6 +102,22 @@ export default function GeneratePage() {
 
   const handleShare = () => {
     console.log("[v0] Sharing content")
+  }
+
+  const handleImportProduct = async () => {
+    if (!productUrl) return
+
+    setIsImporting(true)
+    // Mock API call to fetch product info
+    setTimeout(() => {
+      setImportedProductInfo({
+        name: "サンプル商品名",
+        price: "¥5,980",
+        category: "ファッション",
+        description: "この商品は高品質な素材を使用し、優れたデザインと機能性を兼ね備えています。"
+      })
+      setIsImporting(false)
+    }, 1500)
   }
 
   return (
@@ -190,13 +214,89 @@ export default function GeneratePage() {
             )}
 
             {inputMethod === "url" && (
-              <div className="space-y-2">
-                <Label htmlFor="product-url">商品ページURL</Label>
-                <div className="relative">
-                  <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input id="product-url" placeholder="https://example.com/products/item" className="pl-9" />
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="product-url">商品ページURL</Label>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="product-url"
+                        placeholder="https://example.com/products/item"
+                        className="pl-9"
+                        value={productUrl}
+                        onChange={(e) => setProductUrl(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleImportProduct}
+                      disabled={!productUrl || isImporting}
+                    >
+                      {isImporting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          取得中
+                        </>
+                      ) : (
+                        "インポート"
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">URLから自動で商品情報を取得します</p>
                 </div>
-                <p className="text-xs text-muted-foreground">URLから自動で商品情報を取得します</p>
+
+                {importedProductInfo && (
+                  <div className="space-y-3 p-4 bg-muted/50 rounded-lg border border-border">
+                    <div className="space-y-2">
+                      <Label htmlFor="product-name">商品名</Label>
+                      <Input
+                        id="product-name"
+                        value={importedProductInfo.name}
+                        onChange={(e) =>
+                          setImportedProductInfo({ ...importedProductInfo, name: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="product-price">価格</Label>
+                        <Input
+                          id="product-price"
+                          value={importedProductInfo.price}
+                          onChange={(e) =>
+                            setImportedProductInfo({ ...importedProductInfo, price: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="product-category">カテゴリー</Label>
+                        <Input
+                          id="product-category"
+                          value={importedProductInfo.category}
+                          onChange={(e) =>
+                            setImportedProductInfo({ ...importedProductInfo, category: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="product-description">説明</Label>
+                      <Textarea
+                        id="product-description"
+                        value={importedProductInfo.description}
+                        onChange={(e) =>
+                          setImportedProductInfo({ ...importedProductInfo, description: e.target.value })
+                        }
+                        rows={3}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      この情報はプロンプトと一緒にAIに送信されます
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 

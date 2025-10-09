@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, Search, ExternalLink, Trash2, Edit, Sparkles } from "lucide-react"
+import { Plus, Search, ExternalLink, Trash2, Edit, Sparkles, LinkIcon, Loader2 } from "lucide-react"
 
 // Mock data
 const mockProducts = [
@@ -81,13 +81,39 @@ export default function ProductsPage() {
   const [products, setProducts] = useState(mockProducts)
   const [searchQuery, setSearchQuery] = useState("")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [productUrl, setProductUrl] = useState("")
+  const [isImporting, setIsImporting] = useState(false)
+  const [importedProductInfo, setImportedProductInfo] = useState<{
+    name: string
+    price: string
+    category: string
+    description: string
+  } | null>(null)
 
   const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+  const handleImportProduct = async () => {
+    if (!productUrl) return
+
+    setIsImporting(true)
+    // Mock API call to fetch product info
+    setTimeout(() => {
+      setImportedProductInfo({
+        name: "サンプル商品名",
+        price: "¥5,980",
+        category: "ファッション",
+        description: "この商品は高品質な素材を使用し、優れたデザインと機能性を兼ね備えています。"
+      })
+      setIsImporting(false)
+    }, 1500)
+  }
 
   const handleAddProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     // Mock add functionality
     setIsAddDialogOpen(false)
+    setProductUrl("")
+    setImportedProductInfo(null)
   }
 
   const handleDeleteProduct = (id: number) => {
@@ -116,34 +142,102 @@ export default function ProductsPage() {
             <form onSubmit={handleAddProduct} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="product-url">商品URL</Label>
-                <Input id="product-url" placeholder="https://example.com/products/item" />
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="product-url"
+                      placeholder="https://example.com/products/item"
+                      className="pl-9"
+                      value={productUrl}
+                      onChange={(e) => setProductUrl(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleImportProduct}
+                    disabled={!productUrl || isImporting}
+                  >
+                    {isImporting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        取得中
+                      </>
+                    ) : (
+                      "インポート"
+                    )}
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground">URLを入力すると自動で商品情報を取得します</p>
               </div>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">または手動で入力</span>
-                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="product-name">商品名</Label>
+                <Input
+                  id="product-name"
+                  placeholder="商品名を入力"
+                  value={importedProductInfo?.name || ""}
+                  onChange={(e) =>
+                    setImportedProductInfo(
+                      importedProductInfo
+                        ? { ...importedProductInfo, name: e.target.value }
+                        : { name: e.target.value, price: "", category: "", description: "" }
+                    )
+                  }
+                />
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="product-name">商品名</Label>
-                  <Input id="product-name" placeholder="商品名を入力" />
+                  <Label htmlFor="product-price">価格</Label>
+                  <Input
+                    id="product-price"
+                    placeholder="¥0,000"
+                    value={importedProductInfo?.price || ""}
+                    onChange={(e) =>
+                      setImportedProductInfo(
+                        importedProductInfo
+                          ? { ...importedProductInfo, price: e.target.value }
+                          : { name: "", price: e.target.value, category: "", description: "" }
+                      )
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="product-price">価格</Label>
-                  <Input id="product-price" placeholder="¥0,000" />
+                  <Label htmlFor="product-category">カテゴリー</Label>
+                  <Input
+                    id="product-category"
+                    placeholder="ファッション、アクセサリーなど"
+                    value={importedProductInfo?.category || ""}
+                    onChange={(e) =>
+                      setImportedProductInfo(
+                        importedProductInfo
+                          ? { ...importedProductInfo, category: e.target.value }
+                          : { name: "", price: "", category: e.target.value, description: "" }
+                      )
+                    }
+                  />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="product-category">カテゴリー</Label>
-                <Input id="product-category" placeholder="ファッション、アクセサリーなど" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="product-description">商品説明</Label>
-                <Textarea id="product-description" placeholder="商品の特徴や魅力を入力してください" rows={4} />
+                <Textarea
+                  id="product-description"
+                  placeholder="商品の特徴や魅力を入力してください"
+                  rows={4}
+                  value={importedProductInfo?.description || ""}
+                  onChange={(e) =>
+                    setImportedProductInfo(
+                      importedProductInfo
+                        ? { ...importedProductInfo, description: e.target.value }
+                        : { name: "", price: "", category: "", description: e.target.value }
+                    )
+                  }
+                />
               </div>
               <div className="flex justify-end gap-3">
                 <Button type="button" variant="outline" onClick={() => setIsAddDialogOpen(false)}>
