@@ -43,7 +43,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex flex-col gap-3">
-              <Link href="/dashboard/settings" className="w-full">
+              <Link href="/automatic-generate" className="w-full">
                 <Button size="lg" className="w-full gap-2 shadow-lg shadow-primary/20">
                   ECサイトを連携する
                   <ArrowRight className="h-4 w-4" />
@@ -66,7 +66,7 @@ export default function DashboardPage() {
                 特定の商品について今すぐ投稿を作成したい時に。商品画像をアップロードまたはURLを入力するだけで、AIが魅力的なコンテンツを生成します。
               </p>
             </div>
-            <Link href="/single-post" className="block">
+            <Link href="/single-generate" className="block">
               <Button size="lg" variant="outline" className="w-full gap-2 group-hover:border-primary/50 bg-transparent">
                 今すぐ生成する
                 <ArrowRight className="h-4 w-4" />
