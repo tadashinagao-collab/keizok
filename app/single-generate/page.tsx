@@ -10,15 +10,58 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sparkles, Upload, LinkIcon, Loader2, Download, Instagram } from "lucide-react"
+import { Sparkles, Upload, LinkIcon, Loader2, Download, Instagram, Image, Video, PlayCircle, Megaphone, Share2 } from "lucide-react"
 import { mockProducts } from "@/lib/mock-data"
 
 type InputMethod = "upload" | "url" | "product"
+type ContentType = "post" | "reel" | "story" | "ad"
+
+const contentTypeOptions: Array<{
+  value: ContentType
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+  description: string
+  size: string
+  gradient: string
+}> = [
+  {
+    value: "post",
+    label: "Instagram投稿",
+    icon: Instagram,
+    description: "1080 × 1350 px",
+    size: "(4:5)",
+    gradient: "from-blue-400 to-purple-500"
+  },
+  {
+    value: "reel",
+    label: "Instagramリール動画",
+    icon: PlayCircle,
+    description: "1080 × 1920 px",
+    size: "(9:16)",
+    gradient: "from-purple-400 to-pink-500"
+  },
+  {
+    value: "story",
+    label: "Instagramストーリー",
+    icon: Video,
+    description: "1080 × 1920 px",
+    size: "(9:16)",
+    gradient: "from-pink-400 to-rose-500"
+  },
+  {
+    value: "ad",
+    label: "Instagram広告",
+    icon: Megaphone,
+    description: "1080 × 1350 px",
+    size: "(4:5)",
+    gradient: "from-cyan-400 to-purple-500"
+  }
+]
 
 export default function GeneratePage() {
   const [inputMethod, setInputMethod] = useState<InputMethod>("product")
   const [selectedProduct, setSelectedProduct] = useState<string>("")
-  const [contentType, setContentType] = useState<"image" | "video">("image")
+  const [contentType, setContentType] = useState<ContentType>("post")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedContent, setGeneratedContent] = useState<string | null>(null)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
@@ -45,8 +88,12 @@ export default function GeneratePage() {
     }, 3000)
   }
 
-  const handleDownload = () => {
-    console.log("[v0] Downloading generated content")
+  const handleDownload = (index?: number) => {
+    console.log("[v0] Downloading generated content", index)
+  }
+
+  const handleShare = () => {
+    console.log("[v0] Sharing content")
   }
 
   return (
@@ -153,17 +200,64 @@ export default function GeneratePage() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="content-type">生成タイプ</Label>
-              <Select value={contentType} onValueChange={(value: "image" | "video") => setContentType(value)}>
-                <SelectTrigger id="content-type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="image">画像</SelectItem>
-                  <SelectItem value="video">動画</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="space-y-4">
+              <Label className="text-base font-semibold">生成タイプを選択</Label>
+              <div className="grid grid-cols-4 gap-2">
+                {contentTypeOptions.map((option) => {
+                  const Icon = option.icon
+                  const isSelected = contentType === option.value
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setContentType(option.value)}
+                      className={`relative p-3 rounded-lg border-2 transition-all hover:scale-[1.02] ${
+                        isSelected
+                          ? "border-primary shadow-md"
+                          : "border-border hover:border-primary/50"
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        <div className={`aspect-[9/16] rounded-md bg-gradient-to-br ${option.gradient} flex items-center justify-center relative overflow-hidden`}>
+                          {option.value === "post" || option.value === "ad" ? (
+                            <div className="aspect-[4/5] w-4/5 bg-white/10 rounded-sm" />
+                          ) : (
+                            <div className="absolute bottom-2 left-2 right-2 h-0.5 bg-white/30 rounded-full">
+                              <div className="w-1/3 h-full bg-white rounded-full" />
+                            </div>
+                          )}
+                          <div className="absolute top-1.5 right-1.5 bg-white rounded-full p-0.5">
+                            <Icon className="h-2.5 w-2.5 text-orange-500" />
+                          </div>
+                        </div>
+                        <div className="text-left space-y-0.5">
+                          <p className={`text-xs font-medium ${isSelected ? "text-primary" : ""}`}>
+                            {option.label.replace("Instagram", "")}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {option.description}
+                          </p>
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-1.5 left-1.5 h-4 w-4 bg-primary rounded-full flex items-center justify-center">
+                          <svg
+                            className="h-2.5 w-2.5 text-primary-foreground"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -197,21 +291,36 @@ export default function GeneratePage() {
             <h2 className="text-xl font-semibold">プレビュー</h2>
             {generatedContent ? (
               <div className="space-y-4">
-                <div className="aspect-square bg-muted rounded-lg overflow-hidden ring-1 ring-border">
+                <div className="group relative aspect-square bg-muted rounded-lg overflow-hidden ring-1 ring-border">
                   <img
                     src={generatedContent || "/placeholder.svg"}
                     alt="Generated content"
                     className="w-full h-full object-cover"
                   />
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="bg-white hover:bg-white/90"
+                      onClick={() => handleDownload()}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="bg-white hover:bg-white/90"
+                      onClick={handleShare}
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
-                  <Button className="w-full" size="lg" onClick={handleDownload}>
+                  <Button className="w-full" size="lg" onClick={() => handleDownload()}>
                     <Download className="h-4 w-4 mr-2" />
                     ダウンロード
-                  </Button>
-                  <Button variant="outline" className="w-full bg-transparent" size="lg">
-                    <Instagram className="h-4 w-4 mr-2" />
-                    Instagramに投稿
                   </Button>
                   <Button variant="outline" className="w-full bg-transparent">
                     <Sparkles className="h-4 w-4 mr-2" />
