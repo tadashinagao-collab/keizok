@@ -23,15 +23,20 @@ const menuItems = [
     href: "/home",
   },
   {
+    title: "新規作成",
+    icon: Plus,
+    href: "/create",
+  },
+  {
     title: "自動生成",
     icon: Cog,
     href: "/automatic-generate",
     badge: "自動生成",
   },
   {
-    title: "単発生成",
-    icon: Plus,
-    href: "/single-generate",
+    title: "ブランド管理",
+    icon: Package,
+    href: "/brand",
   },
   {
     title: "商品管理",
@@ -57,7 +62,7 @@ export function AppSidebar() {
           </div> */}
           <div>
             <h2 className="font-bold text-lg">Keizok</h2>
-            <p className="text-xs text-muted-foreground">SNSマーケティング自動化ツール</p>
+            <p className="text-xs text-muted-foreground">SNSマーケティング支援ツール</p>
           </div>
         </div>
       </SidebarHeader>

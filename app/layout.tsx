@@ -16,7 +16,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 
 export const metadata: Metadata = {
   title: "Keizok",
-  description: "SNSマーケティング自動化ツール",
+  description: "SNSマーケティング支援ツール",
   generator: "v0.app",
 }
 

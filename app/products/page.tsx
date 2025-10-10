@@ -18,67 +18,11 @@ import {
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Search, ExternalLink, Trash2, Edit, Sparkles, LinkIcon, Loader2 } from "lucide-react"
-
-// Mock data
-const mockProducts = [
-  {
-    id: 1,
-    name: "サマーコレクション ワンピース",
-    price: "¥8,900",
-    category: "ファッション",
-    url: "https://example.com/products/summer-dress",
-    image: "/summer-dress.jpg",
-    generatedCount: 12,
-  },
-  {
-    id: 2,
-    name: "オーガニックコットン Tシャツ",
-    price: "¥3,500",
-    category: "ファッション",
-    url: "https://example.com/products/organic-tshirt",
-    image: "/organic-cotton-tshirt.jpg",
-    generatedCount: 8,
-  },
-  {
-    id: 3,
-    name: "レザーハンドバッグ",
-    price: "¥15,800",
-    category: "アクセサリー",
-    url: "https://example.com/products/leather-bag",
-    image: "/leather-handbag.jpg",
-    generatedCount: 15,
-  },
-  {
-    id: 4,
-    name: "スニーカー ホワイト",
-    price: "¥12,000",
-    category: "シューズ",
-    url: "https://example.com/products/white-sneakers",
-    image: "/white-sneakers.jpg",
-    generatedCount: 20,
-  },
-  {
-    id: 5,
-    name: "サングラス UV400",
-    price: "¥6,800",
-    category: "アクセサリー",
-    url: "https://example.com/products/sunglasses",
-    image: "/stylish-sunglasses.png",
-    generatedCount: 5,
-  },
-  {
-    id: 6,
-    name: "デニムジャケット",
-    price: "¥9,800",
-    category: "ファッション",
-    url: "https://example.com/products/denim-jacket",
-    image: "/denim-jacket.jpg",
-    generatedCount: 10,
-  },
-]
+import { useProducts } from "@/hooks/use-products"
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState(mockProducts)
+  const { products, addProduct, deleteProduct } = useProducts()
+
   const [searchQuery, setSearchQuery] = useState("")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [productUrl, setProductUrl] = useState("")
@@ -88,6 +32,8 @@ export default function ProductsPage() {
     price: string
     category: string
     description: string
+    url: string
+    image: string
   } | null>(null)
 
   const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -102,7 +48,9 @@ export default function ProductsPage() {
         name: "サンプル商品名",
         price: "¥5,980",
         category: "ファッション",
-        description: "この商品は高品質な素材を使用し、優れたデザインと機能性を兼ね備えています。"
+        description: "この商品は高品質な素材を使用し、優れたデザインと機能性を兼ね備えています。",
+        url: productUrl,
+        image: "/placeholder.svg"
       })
       setIsImporting(false)
     }, 1500)
@@ -110,14 +58,25 @@ export default function ProductsPage() {
 
   const handleAddProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Mock add functionality
+
+    if (importedProductInfo) {
+      addProduct({
+        name: importedProductInfo.name,
+        price: importedProductInfo.price,
+        category: importedProductInfo.category,
+        description: importedProductInfo.description,
+        url: importedProductInfo.url,
+        image: importedProductInfo.image
+      })
+    }
+
     setIsAddDialogOpen(false)
     setProductUrl("")
     setImportedProductInfo(null)
   }
 
   const handleDeleteProduct = (id: number) => {
-    setProducts(products.filter((p) => p.id !== id))
+    deleteProduct(id)
   }
 
   return (
@@ -186,7 +145,7 @@ export default function ProductsPage() {
                     setImportedProductInfo(
                       importedProductInfo
                         ? { ...importedProductInfo, name: e.target.value }
-                        : { name: e.target.value, price: "", category: "", description: "" }
+                        : { name: e.target.value, price: "", category: "", description: "", url: "", image: "/placeholder.svg" }
                     )
                   }
                 />
@@ -202,7 +161,7 @@ export default function ProductsPage() {
                       setImportedProductInfo(
                         importedProductInfo
                           ? { ...importedProductInfo, price: e.target.value }
-                          : { name: "", price: e.target.value, category: "", description: "" }
+                          : { name: "", price: e.target.value, category: "", description: "", url: "", image: "/placeholder.svg" }
                       )
                     }
                   />
@@ -217,7 +176,7 @@ export default function ProductsPage() {
                       setImportedProductInfo(
                         importedProductInfo
                           ? { ...importedProductInfo, category: e.target.value }
-                          : { name: "", price: "", category: e.target.value, description: "" }
+                          : { name: "", price: "", category: e.target.value, description: "", url: "", image: "/placeholder.svg" }
                       )
                     }
                   />
@@ -234,7 +193,7 @@ export default function ProductsPage() {
                     setImportedProductInfo(
                       importedProductInfo
                         ? { ...importedProductInfo, description: e.target.value }
-                        : { name: "", price: "", category: "", description: e.target.value }
+                        : { name: "", price: "", category: "", description: e.target.value, url: "", image: "/placeholder.svg" }
                     )
                   }
                 />
